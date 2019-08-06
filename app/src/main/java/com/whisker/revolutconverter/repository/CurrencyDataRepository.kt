@@ -12,11 +12,9 @@ class CurrencyDataRepository(
 ) : CurrencyRepository {
 
     override fun getCurrencyConversion(currencyCode: String): Flowable<List<Currency>> {
-        return Flowable.interval(1000, TimeUnit.MILLISECONDS)
-                .flatMapSingle {
-                    revolutConverterService
-                        .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
-                        .map { CurrencyMapper.transformFromMap(it.rates!!) }
-                }
+        return revolutConverterService
+                .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
+                .map { CurrencyMapper.transformFromMap(it.rates!!) }
+                .repeatWhen { Flowable.interval(1000, TimeUnit.MILLISECONDS) }
     }
 }
