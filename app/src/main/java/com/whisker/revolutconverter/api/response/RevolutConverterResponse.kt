@@ -1,4 +1,4 @@
-package com.whisker.revolutconverter.api
+package com.whisker.revolutconverter.api.response
 
 import com.google.gson.annotations.SerializedName
 

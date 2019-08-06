@@ -1,5 +1,6 @@
-package com.whisker.revolutconverter.api
+package com.whisker.revolutconverter.api.service
 
+import com.whisker.revolutconverter.api.response.RevolutConverterResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.QueryMap

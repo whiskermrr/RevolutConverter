@@ -1,4 +1,4 @@
-package com.whisker.revolutconverter.api
+package com.whisker.revolutconverter.api.request
 
 data class GetCurrencyRatesRequest(
     var currencyCode: String
