@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class RevolutConverterResponse(
     @SerializedName("base")
-    val base: String? = null,
+    val base: String,
 
     @SerializedName("date")
-    val date: String? = null,
+    val date: String,
 
     @SerializedName("rates")
-    val rates: HashMap<String, Double>? = null
+    val rates: HashMap<String, Float>
 )

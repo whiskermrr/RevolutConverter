@@ -14,7 +14,7 @@ class CurrencyDataRepository(
     override fun getCurrencyConversion(currencyCode: String): Flowable<List<Currency>> {
         return revolutConverterService
                 .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
-                .map { CurrencyMapper.transformFromMap(it.rates!!) }
+                .map { CurrencyMapper.transformFromResponse(it) }
                 .repeatWhen { Flowable.interval(1000, TimeUnit.MILLISECONDS) }
     }
 }

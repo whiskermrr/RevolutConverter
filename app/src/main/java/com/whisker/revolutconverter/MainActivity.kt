@@ -22,9 +22,11 @@ class MainActivity : AppCompatActivity(), Injectable, HasSupportFragmentInjector
         AndroidInjection.inject(this)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.beginTransaction()
+        if(savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
                 .add(mainContainer.id, CurrencyConverterFragment())
                 .commit()
+        }
     }
 
     override fun supportFragmentInjector() = fragmentDispatchingAndroidInjector

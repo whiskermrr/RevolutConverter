@@ -3,15 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="72dp">
+
+    <ImageView
+        android:id="@+id/ivCurrency"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        />
+
+    <TextView
+        android:id="@+id/tvCurrencyCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ivCurrency"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/currency_text"
+        tools:text="EUR" />
 
     <TextView
         android:id="@+id/tvCurrencyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvCurrencyCode"
+        app:layout_constraintTop_toBottomOf="@id/tvCurrencyCode"
+        tools:text="Euro"
+        />
+    
+    <EditText
+        android:id="@+id/etCurrencyRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
-        tools:text="Euro" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
+        android:textSize="20sp"
+        android:textAlignment="textEnd"
+        android:textColor="@color/currency_text"
+        android:minEms="2"
+        android:inputType="number"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
