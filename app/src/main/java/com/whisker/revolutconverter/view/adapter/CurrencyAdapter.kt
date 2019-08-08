@@ -12,32 +12,54 @@ import kotlinx.android.synthetic.main.currency_row.view.*
 import org.jetbrains.anko.layoutInflater
 import java.text.DecimalFormat
 
-class CurrencyAdapter : RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>() {
+class CurrencyAdapter(
+    private val currencyClickListener: OnCurrencyClickListener
+) : RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>() {
 
     private var currencies: MutableList<Currency> = mutableListOf()
     private var baseRate = 1f
 
-    fun setCurrencies(newCurrencies: List<Currency>) {
+    private val textWatcher = object: TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if(s.isNullOrEmpty()) {
+                changeBaseRate(0f)
+            } else {
+                changeBaseRate(s.toString().toFloat())
+            }
+        }
+    }
+
+    fun setCurrencies(list: List<Currency>) {
+        val newCurrencies =
+            list.sortedBy { currency ->  currencies.map { it.code }.indexOf(currency.code) }
+
         val diffResult =
             DiffUtil.calculateDiff(CurrencyDiffUtil(ArrayList(currencies), ArrayList(newCurrencies)))
 
-        if(currencies.isNotEmpty() && newCurrencies.isNotEmpty()) {
-            if(currencies[0].code == newCurrencies[0].code) {
-                val baseCurrency = currencies[0]
-                currencies.clear()
-                if(newCurrencies.size > 1) {
-                    currencies.addAll(newCurrencies.subList(1, newCurrencies.size))
-                }
-                currencies.add(0, baseCurrency)
-            } else {
-                currencies.clear()
-                currencies.addAll(newCurrencies)
+
+        if(currencies.isNotEmpty() && newCurrencies.isNotEmpty()
+            && currencies[0].code == newCurrencies[0].code) {
+            val baseCurrency = currencies[0]
+            currencies.clear()
+            if(newCurrencies.size > 1) {
+                currencies.addAll(newCurrencies.subList(1, newCurrencies.size))
             }
+            currencies.add(0, baseCurrency)
         } else {
             currencies.clear()
             currencies.addAll(newCurrencies)
         }
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun changeBaseCurrency(position: Int) {
+        val newBaseCurrency= currencies.removeAt(position)
+        baseRate *= newBaseCurrency.rate
+        newBaseCurrency.rate = 1f
+        currencies.add(0, newBaseCurrency)
+        notifyDataSetChanged()
     }
 
     fun changeBaseRate(newRate: Float) {
@@ -65,42 +87,47 @@ class CurrencyAdapter : RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>
 
     inner class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val textWatcher = object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(s.isNullOrEmpty()) {
-                    changeBaseRate(0f)
-                } else {
-                    changeBaseRate(s.toString().toFloat())
-                }
-            }
-        }
-
         fun bind(currency: Currency, position: Int, payloads: MutableList<Any>? = null) {
             itemView.apply {
                 if(position != 0) {
                     etCurrencyRate.removeTextChangedListener(textWatcher)
+                    setOnClickListener {
+                        currencyClickListener.onCurrencyClicked(currency.code, position)
+                    }
                 }
                 if(!payloads.isNullOrEmpty()) {
                     when(payloads[0] as Int) {
                         CurrencyDiffUtil.UPDATE_RATE -> {
-                            val rateText =
-                                DecimalFormat("#.##").format(currency.rate * baseRate)
-                            etCurrencyRate.setText(rateText)
+                            setCurrencyRate(currency.rate)
                         }
                     }
                 } else {
-                    tvCurrencyCode.text = currency.code
-                    tvCurrencyName.text = java.util.Currency.getInstance(currency.code).displayName
-                    val rateText =
-                        DecimalFormat("#.##").format(currency.rate * baseRate)
-                    etCurrencyRate.setText(rateText)
+                    setCurrencyCode(currency.code)
+                    setCurrencyName(currency.code)
+                    setCurrencyRate(currency.rate)
                 }
                 if(position == 0) {
                     etCurrencyRate.addTextChangedListener(textWatcher)
                 }
             }
         }
+
+        private fun setCurrencyCode(code: String) {
+            itemView.tvCurrencyCode.text = code
+        }
+
+        private fun setCurrencyName(code: String) {
+            itemView.tvCurrencyName.text = java.util.Currency.getInstance(code).displayName
+        }
+
+        private fun setCurrencyRate(rate: Float) {
+            val rateText =
+                DecimalFormat("#.##").format(rate * baseRate)
+            itemView.etCurrencyRate.setText(rateText)
+        }
+    }
+
+    interface OnCurrencyClickListener {
+        fun onCurrencyClicked(currencyCode: String, position: Int)
     }
 }
