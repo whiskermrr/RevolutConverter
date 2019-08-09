@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.whisker.revolutconverter.R
 import com.whisker.revolutconverter.model.Currency
+import com.whisker.revolutconverter.utils.loadFlag
 import kotlinx.android.synthetic.main.currency_row.view.*
 import org.jetbrains.anko.layoutInflater
 import java.text.DecimalFormat
@@ -102,6 +103,7 @@ class CurrencyAdapter(
                         }
                     }
                 } else {
+                    setFlagImage(currency.code)
                     setCurrencyCode(currency.code)
                     setCurrencyName(currency.code)
                     setCurrencyRate(currency.rate)
@@ -110,6 +112,10 @@ class CurrencyAdapter(
                     etCurrencyRate.addTextChangedListener(textWatcher)
                 }
             }
+        }
+
+        private fun setFlagImage(code: String) {
+            itemView.ivCurrency.loadFlag(code)
         }
 
         private fun setCurrencyCode(code: String) {
