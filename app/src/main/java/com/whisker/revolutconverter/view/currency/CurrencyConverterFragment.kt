@@ -48,21 +48,20 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
 
     override fun onCurrencyClicked(currencyCode: String, position: Int) {
         currencyAdapter.changeBaseCurrency(position)
-        smoothScroller.targetPosition = 0
         requestFirstItemFocus()
         viewModel.setBaseCurrency(currencyCode)
     }
 
     private fun requestFirstItemFocus() {
-        layoutManager.startSmoothScroll(smoothScroller)
+        rvCurrencies.scrollToPosition(0)
         if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
             rvCurrencies.post {
                 rvCurrencies.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
             }
         } else {
             rvCurrencies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if(dx == 0 && dy == 0) {
                         recyclerView.post {
                             recyclerView.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
                             recyclerView.removeOnScrollListener(this)

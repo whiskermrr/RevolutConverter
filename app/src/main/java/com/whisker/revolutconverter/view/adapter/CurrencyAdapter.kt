@@ -60,7 +60,7 @@ class CurrencyAdapter(
         baseRate *= newBaseCurrency.rate
         newBaseCurrency.rate = 1f
         currencies.add(0, newBaseCurrency)
-        notifyDataSetChanged()
+        notifyItemMoved(position, 0)
     }
 
     fun changeBaseRate(newRate: Float) {

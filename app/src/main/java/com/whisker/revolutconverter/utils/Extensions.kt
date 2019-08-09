@@ -2,7 +2,6 @@ package com.whisker.revolutconverter.utils
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
