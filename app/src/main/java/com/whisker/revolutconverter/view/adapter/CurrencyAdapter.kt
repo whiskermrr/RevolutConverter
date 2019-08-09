@@ -61,6 +61,7 @@ class CurrencyAdapter(
         newBaseCurrency.rate = 1f
         currencies.add(0, newBaseCurrency)
         notifyItemMoved(position, 0)
+        notifyItemChanged(0)
     }
 
     fun changeBaseRate(newRate: Float) {
@@ -110,6 +111,7 @@ class CurrencyAdapter(
                 }
                 if(position == 0) {
                     etCurrencyRate.addTextChangedListener(textWatcher)
+                    setOnClickListener(null)
                 }
             }
         }

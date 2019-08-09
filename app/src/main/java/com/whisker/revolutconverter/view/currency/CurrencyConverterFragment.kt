@@ -36,11 +36,10 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CurrencyConverterViewModel::class.java)
-
         rvCurrencies.layoutManager = layoutManager
         rvCurrencies.adapter = currencyAdapter
 
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CurrencyConverterViewModel::class.java)
         viewModel.getCurrencies().observe(this, Observer { currencies ->
             currencyAdapter.setCurrencies(currencies)
         })

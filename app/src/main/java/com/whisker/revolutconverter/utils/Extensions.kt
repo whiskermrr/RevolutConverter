@@ -15,7 +15,8 @@ fun Context.isNetworkAvailable() : Boolean {
 
 fun ImageView.loadFlag(currencyCode: String) {
     val flagDrawable = try {
-        val resourceID = context.resources.getIdentifier(currencyCode.toLowerCase(), "drawable", context.packageName)
+        val resourceID =
+            context.resources.getIdentifier("${currencyCode.toLowerCase()}_flag", "drawable", context.packageName)
         ContextCompat.getDrawable(context, resourceID)
     } catch (e: Resources.NotFoundException) {
         ContextCompat.getDrawable(context, R.drawable.image_placeholder)
