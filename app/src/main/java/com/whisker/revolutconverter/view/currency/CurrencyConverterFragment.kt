@@ -1,15 +1,18 @@
 package com.whisker.revolutconverter.view.currency
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.whisker.revolutconverter.R
+import com.whisker.revolutconverter.model.CurrencyViewState
 import com.whisker.revolutconverter.view.adapter.CurrencyAdapter
 import com.whisker.revolutconverter.view.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_currency_converter.*
@@ -40,8 +43,19 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
         rvCurrencies.adapter = currencyAdapter
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CurrencyConverterViewModel::class.java)
-        viewModel.getCurrencies().observe(this, Observer { currencies ->
-            currencyAdapter.setCurrencies(currencies)
+        viewModel.getCurrencies().observe(this, Observer { viewState ->
+            when(viewState) {
+                is CurrencyViewState.Data -> {
+                    currencyAdapter.setCurrencies(viewState.currencies)
+                }
+                is CurrencyViewState.Error -> {
+                    AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.alert_dialog_problem_title))
+                        .setMessage(viewState.message)
+                        .setNeutralButton(getString(R.string.dialog_ok), null)
+                        .show()
+                }
+            }
         })
     }
 

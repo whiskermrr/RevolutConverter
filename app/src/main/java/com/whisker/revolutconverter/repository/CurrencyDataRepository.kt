@@ -16,5 +16,6 @@ class CurrencyDataRepository(
                 .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
                 .map { CurrencyMapper.transformFromResponse(it) }
                 .repeatWhen { Flowable.interval(1000, TimeUnit.MILLISECONDS) }
+                .onBackpressureLatest()
     }
 }

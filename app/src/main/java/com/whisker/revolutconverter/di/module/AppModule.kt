@@ -3,6 +3,7 @@ package com.whisker.revolutconverter.di.module
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.whisker.revolutconverter.App
+import com.whisker.revolutconverter.api.exception.InternalServerErrorException
 import com.whisker.revolutconverter.api.exception.NoConnectivityException
 import com.whisker.revolutconverter.api.service.RevolutConverterService
 import com.whisker.revolutconverter.repository.CurrencyDataRepository
@@ -40,11 +41,27 @@ class AppModule {
 
     @Provides
     @Singleton
+    @Named("ErrorCodeInterceptor")
+    fun provideErrorCodeInterceptor() : Interceptor {
+        return Interceptor { chain ->
+            val response = chain.proceed(chain.request())
+            if(response.code() == 500) {
+                throw InternalServerErrorException()
+            } else {
+                response
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
-            @Named("ConnectivityInterceptor") connectivityInterceptor: Interceptor
+            @Named("ConnectivityInterceptor") connectivityInterceptor: Interceptor,
+            @Named("ErrorCodeInterceptor") errorCodeInterceptor: Interceptor
     ) : OkHttpClient {
         return OkHttpClient.Builder()
                 .addInterceptor(connectivityInterceptor)
+                .addInterceptor(errorCodeInterceptor)
                 .build()
     }
 

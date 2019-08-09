@@ -10,7 +10,9 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.whisker.revolutconverter.R
 
 fun Context.isNetworkAvailable() : Boolean {
-    return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo.isConnected
+    val connectivityManager = (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+    val networkInfo = connectivityManager.activeNetworkInfo
+    return networkInfo != null && networkInfo.isConnected
 }
 
 fun ImageView.loadFlag(currencyCode: String) {
