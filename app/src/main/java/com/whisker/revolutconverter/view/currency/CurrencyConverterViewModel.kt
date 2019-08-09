@@ -2,11 +2,9 @@ package com.whisker.revolutconverter.view.currency
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.whisker.revolutconverter.model.Currency
 import com.whisker.revolutconverter.model.CurrencyViewState
 import com.whisker.revolutconverter.repository.CurrencyRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject

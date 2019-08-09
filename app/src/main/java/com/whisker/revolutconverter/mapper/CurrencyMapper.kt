@@ -11,7 +11,7 @@ object CurrencyMapper {
         return currencies
     }
 
-    private fun transformFromMap(map: Map<String, Float>) : MutableList<Currency> {
+    fun transformFromMap(map: Map<String, Float>) : MutableList<Currency> {
         val currencies: MutableList<Currency> = mutableListOf()
         map.keys.forEach { currencies.add(Currency(it, map[it] ?: 0f)) }
         return currencies

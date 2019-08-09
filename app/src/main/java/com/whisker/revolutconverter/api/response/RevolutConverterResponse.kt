@@ -10,5 +10,5 @@ data class RevolutConverterResponse(
     val date: String,
 
     @SerializedName("rates")
-    val rates: HashMap<String, Float>
+    val rates: Map<String, Float>
 )
