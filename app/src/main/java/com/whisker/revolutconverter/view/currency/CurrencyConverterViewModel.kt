@@ -16,16 +16,18 @@ class CurrencyConverterViewModel
 
     private val currencies = MutableLiveData<CurrencyViewState>()
     private lateinit var currencyDisposable: Disposable
+    private var baseCurrency: String = "EUR"
 
     init {
-        setBaseCurrency("EUR")
+        refreshCurrency("EUR")
     }
 
-    fun setBaseCurrency(currencyCode: String) {
+    fun refreshCurrency(currencyCode: String = baseCurrency) {
+        if(baseCurrency != currencyCode) baseCurrency = currencyCode
         if(::currencyDisposable.isInitialized && !currencyDisposable.isDisposed) {
             currencyDisposable.dispose()
         }
-        currencyDisposable = currencyRepository.getCurrencyConversion(currencyCode)
+        currencyDisposable = currencyRepository.getCurrencyConversion(baseCurrency)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ currencyMap ->

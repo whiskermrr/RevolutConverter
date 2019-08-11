@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.whisker.revolutconverter.R
 import com.whisker.revolutconverter.model.CurrencyViewState
@@ -20,16 +19,12 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
 
     private lateinit var viewModel: CurrencyConverterViewModel
     private lateinit var currencyAdapter: CurrencyAdapter
-    private lateinit var smoothScroller: LinearSmoothScroller
     private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currencyAdapter = CurrencyAdapter(this)
         layoutManager = LinearLayoutManager(context)
-        smoothScroller = object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int = SNAP_TO_START
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,6 +38,9 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CurrencyConverterViewModel::class.java)
         viewModel.getCurrencies().observe(viewLifecycleOwner, Observer { viewState ->
+            if(swipeLayout.isRefreshing)
+                swipeLayout.isRefreshing = false
+
             when(viewState) {
                 is CurrencyViewState.Data -> {
                     currencyAdapter.setCurrencies(viewState.currencies)
@@ -56,12 +54,16 @@ class CurrencyConverterFragment : BaseFragment(), CurrencyAdapter.OnCurrencyClic
                 }
             }
         })
+
+        swipeLayout.setOnRefreshListener {
+            viewModel.refreshCurrency()
+        }
     }
 
     override fun onCurrencyClicked(currencyCode: String, position: Int) {
         currencyAdapter.changeBaseCurrency(position)
         requestFirstItemFocus()
-        viewModel.setBaseCurrency(currencyCode)
+        viewModel.refreshCurrency(currencyCode)
     }
 
     private fun requestFirstItemFocus() {

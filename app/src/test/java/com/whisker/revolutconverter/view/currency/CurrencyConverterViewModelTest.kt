@@ -72,7 +72,7 @@ class CurrencyConverterViewModelTest {
         whenever(mockCurrencyRepository.getCurrencyConversion("EUR"))
             .thenReturn(Flowable.just(updatedCurrencies))
 
-        viewModel.setBaseCurrency("EUR")
+        viewModel.refreshCurrency("EUR")
         assert(viewModel.getCurrencies().value is CurrencyViewState.Data)
         assertEquals((viewModel.getCurrencies().value as CurrencyViewState.Data).currencies, updatedCurrencies)
     }
