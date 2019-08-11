@@ -107,7 +107,7 @@ class CurrencyConverterViewModelTest {
 
         assert(viewModel.getCurrencies().value is CurrencyViewState.Error)
         assertEquals((viewModel.getCurrencies().value as CurrencyViewState.Error).message, error.message)
-        verify(mockObserver, times(0)).onChanged(any())
+        verify(mockObserver, times(1)).onChanged(any())
     }
 
     @Test

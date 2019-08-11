@@ -8,14 +8,14 @@ import io.reactivex.Flowable
 import java.util.concurrent.TimeUnit
 
 class CurrencyDataRepository(
-        private val revolutConverterService: RevolutConverterService
+    private val revolutConverterService: RevolutConverterService
 ) : CurrencyRepository {
 
     override fun getCurrencyConversion(currencyCode: String): Flowable<List<Currency>> {
         return revolutConverterService
-                .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
-                .map { CurrencyMapper.transformFromResponse(it) }
-                .repeatWhen { Flowable.interval(1000, TimeUnit.MILLISECONDS) }
-                .onBackpressureLatest()
+            .getCurrencyRates(GetCurrencyRatesRequest(currencyCode).queryMap())
+            .map { CurrencyMapper.transformFromResponse(it) }
+            .repeatWhen { it.delay(1000, TimeUnit.MILLISECONDS) }
+            .onBackpressureDrop()
     }
 }
